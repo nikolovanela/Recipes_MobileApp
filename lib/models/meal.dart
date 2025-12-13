@@ -6,6 +6,7 @@ class Meal {
   final String youtube;
   final List<Map<String, String>> ingredients;
   final String category;
+  bool isFavorite;
 
   Meal({
     required this.id,
@@ -15,6 +16,7 @@ class Meal {
     this.youtube = '',
     this.ingredients = const [],
     this.category = '',
+    this.isFavorite = false,
   });
 
   factory Meal.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,34 @@ class Meal {
       youtube: json['strYoutube'] ?? '',
       category: json['strCategory'] ?? '',
       ingredients: ingredientsList,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'thumbnail': thumbnail,
+      'instructions': instructions,
+      'youtube': youtube,
+      'category': category,
+      'ingredients': ingredients,
+      'isFavorite': isFavorite,
+    };
+  }
+
+  factory Meal.fromMap(Map<String, dynamic> map) {
+    return Meal(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      thumbnail: map['thumbnail'] ?? '',
+      instructions: map['instructions'] ?? '',
+      youtube: map['youtube'] ?? '',
+      category: map['category'] ?? '',
+      ingredients: List<Map<String, String>>.from(
+        (map['ingredients'] ?? []).map((item) => Map<String, String>.from(item)),
+      ),
+      isFavorite: map['isFavorite'] ?? false,
     );
   }
 }

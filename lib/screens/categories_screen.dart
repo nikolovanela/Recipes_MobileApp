@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab2/screens/favorites_screen.dart';
 import '../models/category.dart';
 import '../services/api_service.dart';
 import '../widgets/category_card.dart';
@@ -48,7 +49,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             icon: Icon(Icons.shuffle),
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => RandomMealScreen()));
+                context,
+                MaterialPageRoute(builder: (_) => RandomMealScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => FavoritesScreen()),
+              );
             },
           ),
         ],

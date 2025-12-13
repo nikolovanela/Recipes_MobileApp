@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/meal.dart';
 import '../services/api_service.dart';
+import '../models/favorites_manager.dart';
+import 'favorites_screen.dart';
 
 class MealDetailScreen extends StatefulWidget {
   final String mealId;
@@ -26,6 +28,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   Future<void> loadMeal() async {
     try {
       final meal = await ApiService.getMealDetail(widget.mealId);
+      meal.isFavorite = FavoritesManager.instance.isFavorite(meal.id);
+
       setState(() {
         _meal = meal;
         _isLoading = false;
@@ -36,6 +40,23 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         SnackBar(content: Text('Error loading meal details')),
       );
     }
+  }
+
+  void _toggleFavorite() {
+    if (_meal == null) return;
+    setState(() {
+      FavoritesManager.instance.toggleFavorite(_meal!);
+      _meal!.isFavorite = !_meal!.isFavorite;
+    });
+  }
+
+  void _openFavorites() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FavoritesScreen(),
+      ),
+    );
   }
 
   void _launchYoutube(String url) async {
@@ -79,7 +100,22 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(_meal!.name)),
+      appBar: AppBar(
+        title: Text(_meal!.name),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.favorite,
+              color: _meal!.isFavorite ? Colors.red : null,
+            ),
+            onPressed: _toggleFavorite,
+          ),
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: _openFavorites,
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12),
         child: Column(
